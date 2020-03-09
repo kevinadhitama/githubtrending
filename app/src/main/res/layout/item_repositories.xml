@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/image_view_avatar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_code_language_indicator_16dp" />
+
+    <TextView
+        android:id="@+id/text_view_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/color_text"
+        android:textSize="12sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/image_view_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Microsoft " />
+
+    <TextView
+        android:id="@+id/text_view_repo_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="6dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:textColor="@color/color_text"
+        android:textSize="15sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/image_view_avatar"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_author"
+        tools:text="Frontend-Bootcamp" />
+
+    <TextView
+        android:id="@+id/text_view_repo_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/color_text"
+        android:textSize="12sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/image_view_avatar"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_repo_name"
+        tools:text="This is a github repo called https://www.github.com with maximum 2 lines in order to fit in well" />
+
+    <TextView
+        android:id="@+id/text_view_code_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:drawablePadding="4dp"
+        android:maxLines="1"
+        android:textColor="@color/color_text"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/text_view_repo_desc"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_repo_desc"
+        tools:drawableStart="@drawable/ic_code_language_indicator_16dp"
+        tools:text="C++" />
+
+    <TextView
+        android:id="@+id/text_view_starred"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:drawableStart="@drawable/ic_star_yellow_16dp"
+        android:drawablePadding="4dp"
+        android:maxLines="1"
+        android:textColor="@color/color_text"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/text_view_code_language"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_repo_desc"
+        tools:text="132" />
+
+    <TextView
+        android:id="@+id/text_view_forked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:drawableStart="@drawable/ic_fork_black_16dp"
+        android:drawablePadding="4dp"
+        android:maxLines="1"
+        android:textColor="@color/color_text"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/text_view_starred"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_repo_desc"
+        tools:text="4,325" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_repo_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="text_view_repo_desc,text_view_code_language,text_view_starred,text_view_forked"
+        tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>
