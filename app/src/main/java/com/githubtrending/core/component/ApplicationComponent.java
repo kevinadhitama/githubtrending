@@ -1,6 +1,6 @@
 package com.githubtrending.core.component;
 
-import com.githubtrending.LandingActivity;
+import com.githubtrending.page.landing.LandingActivity;
 import com.githubtrending.core.module.AppProviderModule;
 
 import javax.inject.Singleton;

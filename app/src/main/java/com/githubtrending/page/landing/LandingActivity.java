@@ -1,4 +1,4 @@
-package com.githubtrending;
+package com.githubtrending.page.landing;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,18 +8,34 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.githubtrending.R;
+import com.githubtrending.core.component.DaggerApplicationComponent;
+
+import javax.inject.Inject;
 
 public class LandingActivity extends AppCompatActivity {
+
+    @Inject
+    LandingViewModelFactory mLandingViewModelFactory;
+    LandingViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplicationComponent.builder().build().inject(this);
+
+        mViewModel = new ViewModelProvider(this, mLandingViewModelFactory).get(LandingViewModel.class);
+
         setContentView(R.layout.landing_activity);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        mViewModel.fetchData();
     }
 
     @Override
