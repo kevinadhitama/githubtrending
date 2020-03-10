@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.githubtrending.R;
 import com.githubtrending.core.component.DaggerApplicationComponent;
@@ -38,6 +39,7 @@ public class LandingActivity extends AppCompatActivity {
 
         initToolbar();
         initRecyclerView();
+        initPullToRefresh();
 
         //first time load
         if (savedInstanceState == null) mViewModel.fetchData();
@@ -57,7 +59,12 @@ public class LandingActivity extends AppCompatActivity {
         mViewModel.mGithubRepoList.observe(this, gitHubRepoItems -> {
             mListAdapter = new GitHubRepoAdapter(this, gitHubRepoItems);
             mBinding.recyclerViewRepo.setAdapter(mListAdapter);
+            mBinding.swipeToRefreshContainer.setRefreshing(false);
         });
+    }
+
+    private void initPullToRefresh() {
+        mBinding.swipeToRefreshContainer.setOnRefreshListener(() -> mViewModel.fetchData());
     }
 
     @Override
