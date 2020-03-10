@@ -47,7 +47,7 @@ public class LandingActivity extends AppCompatActivity implements Observer<List<
         initToolbar();
         initLoader();
         initRecyclerView();
-        initPullToRefresh();
+        initListener();
 
         //first time load
         if (savedInstanceState == null) mViewModel.fetchData();
@@ -75,12 +75,25 @@ public class LandingActivity extends AppCompatActivity implements Observer<List<
             ((SimpleItemAnimator) mBinding.recyclerViewRepo.getItemAnimator()).setSupportsChangeAnimations(false);
         }
         mBinding.recyclerViewRepo.addItemDecoration(new DividerItemDecoration(mBinding.recyclerViewRepo.getContext(), DividerItemDecoration.VERTICAL));
-        mViewModel.mGithubRepoList.observe(this, this);
     }
 
-    private void initPullToRefresh() {
+    private void initListener() {
+        mViewModel.mGithubRepoList.observe(this, this);
+        mViewModel.mErrorState.observe(this, isError -> {
+            if (isError) {
+                mBinding.errorStateWidget.show();
+            } else {
+                mBinding.errorStateWidget.hide();
+            }
+        });
+
         mBinding.swipeToRefreshContainer.setOnRefreshListener(() -> mViewModel.fetchData(true));
+        mBinding.errorStateWidget.setListener(() -> {
+            mViewModel.mErrorState.setValue(false);
+            mViewModel.fetchData(true);
+        });
     }
+
     //endregion
 
     @Override

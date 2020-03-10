@@ -30,14 +30,14 @@ public class LandingViewModel extends ViewModel {
     private Disposable mDisposable;
     private TrendingRepositoriesProvider mTrendingRepoProvider;
     MutableLiveData<List<GitHubRepoItem>> mGithubRepoList;
-    MutableLiveData<Boolean> mLoadingState;
+    MutableLiveData<Boolean> mErrorState;
     Boolean needCacheRepoList;
 
     public LandingViewModel(TrendingRepositoriesProvider trendingRepoProvider) {
         mTrendingRepoProvider = trendingRepoProvider;
         mCompositeDisposable = new CompositeDisposable();
         mGithubRepoList = new MutableLiveData<>();
-        mLoadingState = new MutableLiveData<>();
+        mErrorState = new MutableLiveData<>();
         needCacheRepoList = false;
     }
 
@@ -62,9 +62,7 @@ public class LandingViewModel extends ViewModel {
     private void fetchDataFromCache() {
         mDisposable = mTrendingRepoProvider.getCachedRepoList()
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(disposable -> {
-                    mLoadingState.postValue(true);
-                }).flatMap(res -> {
+                .flatMap(res -> {
                     if (res.length == 0) {
                         needCacheRepoList = true;
                         return mTrendingRepoProvider.getRepoList();
@@ -76,24 +74,20 @@ public class LandingViewModel extends ViewModel {
                         mTrendingRepoProvider.cacheRepoList(res);
                     }
                     mGithubRepoList.postValue(Arrays.asList(res));
-                    mLoadingState.postValue(false);
                 }, err -> {
-                    mLoadingState.postValue(false);
+                    mErrorState.postValue(true);
                 });
     }
 
     private void fetchDataLive() {
         mDisposable = mTrendingRepoProvider.getRepoList()
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(disposable -> {
-                    mLoadingState.postValue(true);
-                }).subscribe(res -> {
+                .subscribe(res -> {
                             mTrendingRepoProvider.cacheRepoList(res);
                             mGithubRepoList.setValue(Arrays.asList(res));
-                            mLoadingState.setValue(false);
                         },
                         err -> {
-                            mLoadingState.postValue(false);
+                            mErrorState.postValue(true);
                         });
     }
 

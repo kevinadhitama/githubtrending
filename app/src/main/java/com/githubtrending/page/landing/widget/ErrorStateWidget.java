@@ -25,7 +25,8 @@ public class ErrorStateWidget extends FrameLayout {
         super(context, attrs);
         removeAllViews();
 
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.error_state_widget, this, true);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.error_state_widget, this, false);
+        addView(view);
 
         if (!isInEditMode()) {
             mBinding = DataBindingUtil.bind(view);
@@ -54,7 +55,7 @@ public class ErrorStateWidget extends FrameLayout {
         setVisibility(GONE);
     }
 
-    interface Listener {
+    public interface Listener {
         void onRetryClickListener();
     }
 }
