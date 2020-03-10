@@ -96,6 +96,13 @@ public class GitHubRepoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         binding.textViewForked.setVisibility(visibility);
     }
 
+    public void collapseAll() {
+        if (mSelectedItem == -1) return;
+
+        mGitHubRepoItemList.get(mSelectedItem).setExpanded(false);
+        mSelectedItem = -1;
+    }
+
     @Override
     public int getItemCount() {
         return mGitHubRepoItemList.size();

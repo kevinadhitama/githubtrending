@@ -74,11 +74,16 @@ public class LandingActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (mListAdapter == null) return super.onOptionsItemSelected(item);
+
+        mListAdapter.collapseAll();
         if (R.id.sort_by_stars == item.getItemId()) {
-            //todo impl sort stars
+            mViewModel.sortData(LandingViewModel.Sort.BY_STARS);
         } else if (R.id.sort_by_name == item.getItemId()) {
-            //todo impl sort name
+            mViewModel.sortData(LandingViewModel.Sort.BY_NAMES);
         }
+        mListAdapter.notifyDataSetChanged();
+
         return super.onOptionsItemSelected(item);
     }
 }

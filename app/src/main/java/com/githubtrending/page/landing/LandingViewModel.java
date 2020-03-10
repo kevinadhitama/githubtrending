@@ -7,6 +7,8 @@ import com.githubtrending.datamodel.landing.GitHubRepoItem;
 import com.githubtrending.provider.TrendingRepositoriesProvider;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -17,6 +19,12 @@ import io.reactivex.schedulers.Schedulers;
  * Created by kevin.adhitama on 2020-03-09.
  */
 public class LandingViewModel extends ViewModel {
+
+    enum Sort {
+        BY_STARS,
+        BY_NAMES
+    }
+
     private CompositeDisposable mCompositeDisposable;
     private Disposable mDisposable;
     private TrendingRepositoriesProvider mTrendingRepoProvider;
@@ -47,5 +55,23 @@ public class LandingViewModel extends ViewModel {
                         });
 
         mCompositeDisposable.add(mDisposable);
+    }
+
+    void sortData(Sort sort) {
+        if (mGithubRepoList.getValue() == null || mGithubRepoList.getValue().isEmpty()) return;
+
+        Comparator<GitHubRepoItem> comparator;
+        switch (sort) {
+            case BY_STARS:
+                comparator = (o1, o2) -> o2.getStars().compareTo(o1.getStars());
+                break;
+            case BY_NAMES:
+                comparator = (o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + sort);
+        }
+
+        Collections.sort(mGithubRepoList.getValue(), comparator);
     }
 }
