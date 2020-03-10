@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel;
 import com.githubtrending.datamodel.landing.GitHubRepoItem;
 import com.githubtrending.provider.TrendingRepositoriesProvider;
 
+import java.util.Arrays;
+import java.util.List;
+
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -17,7 +20,7 @@ public class LandingViewModel extends ViewModel {
     private CompositeDisposable mCompositeDisposable;
     private Disposable mDisposable;
     private TrendingRepositoriesProvider mTrendingRepoProvider;
-    MutableLiveData<GitHubRepoItem[]> mGithubRepoList;
+    MutableLiveData<List<GitHubRepoItem>> mGithubRepoList;
     MutableLiveData<Boolean> loadingPage;
     String errorMessage;
 
@@ -36,7 +39,7 @@ public class LandingViewModel extends ViewModel {
         mDisposable = mTrendingRepoProvider.getRepoList()
                 .subscribeOn(Schedulers.io())
                 .subscribe(res -> {
-                            mGithubRepoList.setValue(res);
+                            mGithubRepoList.setValue(Arrays.asList(res));
                             loadingPage.setValue(false);
                         },
                         err -> {

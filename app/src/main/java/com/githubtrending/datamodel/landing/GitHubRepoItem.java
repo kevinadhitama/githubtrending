@@ -17,11 +17,12 @@ public class GitHubRepoItem {
     Integer stars;
     Integer forks;
     Integer currentPeriodStars;
+    boolean expanded;
 
     public GitHubRepoItem() {
     }
 
-    public GitHubRepoItem(String author, String name, String avatar, String url, String description, String language, String languageColor, Integer stars, Integer forks, Integer currentPeriodStars) {
+    public GitHubRepoItem(String author, String name, String avatar, String url, String description, String language, String languageColor, Integer stars, Integer forks, Integer currentPeriodStars, boolean expanded) {
         this.author = author;
         this.name = name;
         this.avatar = avatar;
@@ -32,6 +33,7 @@ public class GitHubRepoItem {
         this.stars = stars;
         this.forks = forks;
         this.currentPeriodStars = currentPeriodStars;
+        this.expanded = expanded;
     }
 
     public String getAuthor() {
@@ -72,5 +74,13 @@ public class GitHubRepoItem {
 
     public Integer getCurrentPeriodStars() {
         return currentPeriodStars;
+    }
+
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
     }
 }
