@@ -1,12 +1,16 @@
 package com.githubtrending.page.landing.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,10 +57,17 @@ public class GitHubRepoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             binding.textViewRepoName.setText(item.getName());
             binding.textViewRepoDesc.setText(item.getDescription());
             binding.textViewCodeLanguage.setText(item.getLanguage());
+            if (item.getLanguageColor() != null && !item.getLanguageColor().isEmpty()) {
+                Drawable unwrappedDrawable = AppCompatResources.getDrawable(mContext, R.drawable.ic_code_language_indicator_16dp);
+                Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
+                DrawableCompat.setTint(wrappedDrawable, Color.parseColor(item.getLanguageColor()));
+                binding.textViewCodeLanguage.setCompoundDrawablesWithIntrinsicBounds(wrappedDrawable, null, null, null);
+            }
             binding.textViewForked.setText(String.valueOf(item.getForks()));
             binding.textViewStarred.setText(String.valueOf(item.getStars()));
-            binding.groupRepoDetail.setVisibility(item.isExpanded() ? View.VISIBLE : View.GONE);
 
+            setDetailGroupVisibility(binding, item.isExpanded() ? View.VISIBLE : View.GONE);
+            binding.textViewCodeLanguage.setVisibility(item.getLanguage() != null && item.isExpanded() ? View.VISIBLE : View.GONE);
             Glide.with(mContext)
                     .load(item.getAvatar())
                     .apply(RequestOptions.circleCropTransform())
@@ -76,6 +87,13 @@ public class GitHubRepoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 mSelectedItem = item.isExpanded() ? position : -1;
             });
         }
+    }
+
+    private void setDetailGroupVisibility(ItemRepositoriesBinding binding, int visibility) {
+        binding.textViewRepoDesc.setVisibility(visibility);
+        binding.textViewCodeLanguage.setVisibility(visibility);
+        binding.textViewStarred.setVisibility(visibility);
+        binding.textViewForked.setVisibility(visibility);
     }
 
     @Override

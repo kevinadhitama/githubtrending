@@ -7,12 +7,10 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.githubtrending.R;
 import com.githubtrending.core.component.DaggerApplicationComponent;

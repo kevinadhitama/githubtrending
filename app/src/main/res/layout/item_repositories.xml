@@ -76,10 +76,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
             android:drawablePadding="4dp"
             android:maxLines="1"
             android:textColor="@color/color_text"
             android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/text_view_starred"
             app:layout_constraintStart_toStartOf="@+id/text_view_repo_desc"
             app:layout_constraintTop_toBottomOf="@+id/text_view_repo_desc"
             tools:drawableStart="@drawable/ic_code_language_indicator_16dp"
@@ -89,13 +91,14 @@
             android:id="@+id/text_view_starred"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:drawableStart="@drawable/ic_star_yellow_16dp"
             android:drawablePadding="4dp"
             android:maxLines="1"
             android:textColor="@color/color_text"
             android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/text_view_forked"
             app:layout_constraintStart_toEndOf="@+id/text_view_code_language"
             app:layout_constraintTop_toBottomOf="@+id/text_view_repo_desc"
             tools:text="132" />
@@ -113,14 +116,8 @@
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/text_view_starred"
             app:layout_constraintTop_toBottomOf="@+id/text_view_repo_desc"
+            app:layout_goneMarginStart="4dp"
             tools:text="4,325" />
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/group_repo_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="text_view_repo_desc,text_view_code_language,text_view_starred,text_view_forked"
-            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
