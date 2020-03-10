@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -16,11 +18,14 @@ import com.githubtrending.R;
 import com.githubtrending.core.component.DaggerApplicationComponent;
 import com.githubtrending.core.module.ActivityContextProviderModule;
 import com.githubtrending.databinding.LandingActivityBinding;
+import com.githubtrending.datamodel.landing.GitHubRepoItem;
 import com.githubtrending.page.landing.adapter.GitHubRepoAdapter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-public class LandingActivity extends AppCompatActivity {
+public class LandingActivity extends AppCompatActivity implements Observer<List<GitHubRepoItem>> {
 
     @Inject
     LandingViewModelFactory mLandingViewModelFactory;
@@ -40,6 +45,7 @@ public class LandingActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.landing_activity);
 
         initToolbar();
+        initLoader();
         initRecyclerView();
         initPullToRefresh();
 
@@ -47,9 +53,20 @@ public class LandingActivity extends AppCompatActivity {
         if (savedInstanceState == null) mViewModel.fetchData();
     }
 
+    //region init
     private void initToolbar() {
         setSupportActionBar(mBinding.toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    private void initLoader() {
+        for (int i = 0; i < 10; i++)
+            getLayoutInflater().inflate(R.layout.item_repositories_placeholder, mBinding.shimmerViewContainer);
+    }
+
+    private void removeLoader() {
+        mBinding.shimmerViewContainer.removeAllViews();
+        mBinding.shimmerViewContainer.setVisibility(View.GONE);
     }
 
     private void initRecyclerView() {
@@ -58,16 +75,13 @@ public class LandingActivity extends AppCompatActivity {
             ((SimpleItemAnimator) mBinding.recyclerViewRepo.getItemAnimator()).setSupportsChangeAnimations(false);
         }
         mBinding.recyclerViewRepo.addItemDecoration(new DividerItemDecoration(mBinding.recyclerViewRepo.getContext(), DividerItemDecoration.VERTICAL));
-        mViewModel.mGithubRepoList.observe(this, gitHubRepoItems -> {
-            mListAdapter = new GitHubRepoAdapter(this, gitHubRepoItems);
-            mBinding.recyclerViewRepo.setAdapter(mListAdapter);
-            mBinding.swipeToRefreshContainer.setRefreshing(false);
-        });
+        mViewModel.mGithubRepoList.observe(this, this);
     }
 
     private void initPullToRefresh() {
         mBinding.swipeToRefreshContainer.setOnRefreshListener(() -> mViewModel.fetchData(true));
     }
+    //endregion
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,4 +104,14 @@ public class LandingActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    // region on updated data
+    @Override
+    public void onChanged(List<GitHubRepoItem> repoItems) {
+        mListAdapter = new GitHubRepoAdapter(this, repoItems);
+        mBinding.recyclerViewRepo.setAdapter(mListAdapter);
+        mBinding.swipeToRefreshContainer.setRefreshing(false);
+        removeLoader();
+    }
+    //endregion
 }

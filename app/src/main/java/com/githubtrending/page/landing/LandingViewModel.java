@@ -31,7 +31,6 @@ public class LandingViewModel extends ViewModel {
     private TrendingRepositoriesProvider mTrendingRepoProvider;
     MutableLiveData<List<GitHubRepoItem>> mGithubRepoList;
     MutableLiveData<Boolean> mLoadingState;
-    String errorMessage;
     Boolean needCacheRepoList;
 
     public LandingViewModel(TrendingRepositoriesProvider trendingRepoProvider) {
@@ -39,6 +38,7 @@ public class LandingViewModel extends ViewModel {
         mCompositeDisposable = new CompositeDisposable();
         mGithubRepoList = new MutableLiveData<>();
         mLoadingState = new MutableLiveData<>();
+        needCacheRepoList = false;
     }
 
     void fetchData() {
@@ -78,7 +78,6 @@ public class LandingViewModel extends ViewModel {
                     mGithubRepoList.postValue(Arrays.asList(res));
                     mLoadingState.postValue(false);
                 }, err -> {
-                    errorMessage = err.getMessage();
                     mLoadingState.postValue(false);
                 });
     }
@@ -86,13 +85,14 @@ public class LandingViewModel extends ViewModel {
     private void fetchDataLive() {
         mDisposable = mTrendingRepoProvider.getRepoList()
                 .subscribeOn(Schedulers.io())
-                .subscribe(res -> {
+                .doOnSubscribe(disposable -> {
+                    mLoadingState.postValue(true);
+                }).subscribe(res -> {
                             mTrendingRepoProvider.cacheRepoList(res);
                             mGithubRepoList.setValue(Arrays.asList(res));
                             mLoadingState.setValue(false);
                         },
                         err -> {
-                            errorMessage = err.getMessage();
                             mLoadingState.postValue(false);
                         });
     }
