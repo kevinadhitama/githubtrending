@@ -1,9 +1,13 @@
 package com.githubtrending.core.module;
 
+import android.content.Context;
+
 import com.githubtrending.core.provider.ApiProvider;
 import com.githubtrending.core.provider.ApiProviderImpl;
 import com.githubtrending.core.provider.ApiRoute;
 import com.githubtrending.core.provider.ApiRouteImpl;
+import com.githubtrending.core.provider.TrendingRepoSPProvider;
+import com.githubtrending.core.provider.TrendingRepoSPProviderImpl;
 
 import javax.inject.Singleton;
 
@@ -27,5 +31,11 @@ public class AppProviderModule {
     @Provides
     ApiRoute providesApiRoute() {
         return new ApiRouteImpl();
+    }
+
+    @Singleton
+    @Provides
+    TrendingRepoSPProvider providesTrendingRepoSP(Context context) {
+        return new TrendingRepoSPProviderImpl(context);
     }
 }

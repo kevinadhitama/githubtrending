@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -29,32 +30,71 @@ public class LandingViewModel extends ViewModel {
     private Disposable mDisposable;
     private TrendingRepositoriesProvider mTrendingRepoProvider;
     MutableLiveData<List<GitHubRepoItem>> mGithubRepoList;
-    MutableLiveData<Boolean> loadingPage;
+    MutableLiveData<Boolean> mLoadingState;
     String errorMessage;
+    Boolean needCacheRepoList;
 
     public LandingViewModel(TrendingRepositoriesProvider trendingRepoProvider) {
         mTrendingRepoProvider = trendingRepoProvider;
         mCompositeDisposable = new CompositeDisposable();
         mGithubRepoList = new MutableLiveData<>();
-        loadingPage = new MutableLiveData<>();
+        mLoadingState = new MutableLiveData<>();
     }
 
     void fetchData() {
+        fetchData(false);
+    }
+
+    void fetchData(boolean reloadLiveData) {
         if (mDisposable != null) {
             mDisposable.dispose();
         }
 
+        if (reloadLiveData) {
+            fetchDataLive();
+        } else {
+            fetchDataFromCache();
+        }
+
+        mCompositeDisposable.add(mDisposable);
+    }
+
+    private void fetchDataFromCache() {
+        mDisposable = mTrendingRepoProvider.getCachedRepoList()
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> {
+                    mLoadingState.postValue(true);
+                }).flatMap(res -> {
+                    if (res.length == 0) {
+                        needCacheRepoList = true;
+                        return mTrendingRepoProvider.getRepoList();
+                    }
+                    needCacheRepoList = false;
+                    return Observable.just(res);
+                }).subscribe(res -> {
+                    if (needCacheRepoList) {
+                        mTrendingRepoProvider.cacheRepoList(res);
+                    }
+                    mGithubRepoList.postValue(Arrays.asList(res));
+                    mLoadingState.postValue(false);
+                }, err -> {
+                    errorMessage = err.getMessage();
+                    mLoadingState.postValue(false);
+                });
+    }
+
+    private void fetchDataLive() {
         mDisposable = mTrendingRepoProvider.getRepoList()
                 .subscribeOn(Schedulers.io())
                 .subscribe(res -> {
+                            mTrendingRepoProvider.cacheRepoList(res);
                             mGithubRepoList.setValue(Arrays.asList(res));
-                            loadingPage.setValue(false);
+                            mLoadingState.setValue(false);
                         },
                         err -> {
                             errorMessage = err.getMessage();
+                            mLoadingState.postValue(false);
                         });
-
-        mCompositeDisposable.add(mDisposable);
     }
 
     void sortData(Sort sort) {

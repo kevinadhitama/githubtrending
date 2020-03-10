@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.githubtrending.R;
 import com.githubtrending.core.component.DaggerApplicationComponent;
+import com.githubtrending.core.module.ActivityContextProviderModule;
 import com.githubtrending.databinding.LandingActivityBinding;
 import com.githubtrending.page.landing.adapter.GitHubRepoAdapter;
 
@@ -30,7 +31,10 @@ public class LandingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerApplicationComponent.builder().build().inject(this);
+        DaggerApplicationComponent.builder()
+                .activityContextProviderModule(new ActivityContextProviderModule(this))
+                .build()
+                .inject(this);
 
         mViewModel = new ViewModelProvider(this, mLandingViewModelFactory).get(LandingViewModel.class);
         mBinding = DataBindingUtil.setContentView(this, R.layout.landing_activity);
@@ -62,7 +66,7 @@ public class LandingActivity extends AppCompatActivity {
     }
 
     private void initPullToRefresh() {
-        mBinding.swipeToRefreshContainer.setOnRefreshListener(() -> mViewModel.fetchData());
+        mBinding.swipeToRefreshContainer.setOnRefreshListener(() -> mViewModel.fetchData(true));
     }
 
     @Override
