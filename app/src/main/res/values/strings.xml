@@ -4,4 +4,7 @@
     <string name="menu_sort">Sort</string>
     <string name="sort_by_stars">Sort by Stars</string>
     <string name="sort_by_name">Sort by Name</string>
+    <string name="error_message_title">Something Went Wrong..</string>
+    <string name="error_message_desc">An Alien is probably blocking your signal.</string>
+    <string name="error_retry_button">RETRY</string>
 </resources>
