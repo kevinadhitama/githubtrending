@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,7 +44,6 @@ public class LandingActivity extends AppCompatActivity implements Observer<List<
         mBinding = DataBindingUtil.setContentView(this, R.layout.landing_activity);
 
         initToolbar();
-        initLoader();
         initRecyclerView();
         initListener();
 
@@ -57,16 +55,6 @@ public class LandingActivity extends AppCompatActivity implements Observer<List<
     private void initToolbar() {
         setSupportActionBar(mBinding.toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
-
-    private void initLoader() {
-        for (int i = 0; i < 10; i++)
-            getLayoutInflater().inflate(R.layout.item_repositories_placeholder, mBinding.shimmerViewContainer);
-    }
-
-    private void removeLoader() {
-        mBinding.shimmerViewContainer.removeAllViews();
-        mBinding.shimmerViewContainer.setVisibility(View.GONE);
     }
 
     private void initRecyclerView() {
@@ -87,8 +75,12 @@ public class LandingActivity extends AppCompatActivity implements Observer<List<
             }
         });
 
-        mBinding.swipeToRefreshContainer.setOnRefreshListener(() -> mViewModel.fetchData(true));
+        mBinding.swipeToRefreshContainer.setOnRefreshListener(() -> {
+            mViewModel.fetchData(true);
+            mBinding.shimmerViewContainer.show();
+        });
         mBinding.errorStateWidget.setListener(() -> {
+            mBinding.shimmerViewContainer.show();
             mViewModel.mErrorState.setValue(false);
             mViewModel.fetchData(true);
         });
@@ -124,7 +116,7 @@ public class LandingActivity extends AppCompatActivity implements Observer<List<
         mListAdapter = new GitHubRepoAdapter(this, repoItems);
         mBinding.recyclerViewRepo.setAdapter(mListAdapter);
         mBinding.swipeToRefreshContainer.setRefreshing(false);
-        removeLoader();
+        mBinding.shimmerViewContainer.hide();
     }
     //endregion
 }
